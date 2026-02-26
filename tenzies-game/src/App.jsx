@@ -4,7 +4,7 @@ import { nanoid } from "nanoid"
 import Confetti from "react-confetti"
 
 export default function App() {
-    const [dice, setDice] = useState(generateAllNewDice())
+    const [dice, setDice] = useState(() => generateAllNewDice())
    
     const gameWon = dice.every(die => die.isHeld) &&
             dice.every(die => die.value === dice[0].value)
@@ -26,9 +26,13 @@ export default function App() {
     }
 
     function rollDice() {
+        if (!gameWon) {
             setDice(prevDice => prevDice.map(die => die.isHeld ? die :
                  {...die, value: Math.ceil(Math.random() * 6) }
             ))
+        } else {
+            setDice(generateAllNewDice())
+        }
         
     }
 
@@ -51,7 +55,7 @@ export default function App() {
                 {diceElements}
             </div>
 
-            <button onClick={rollDice} className="dice">{gameWon ? "New Game" : "Roll Dice"}</button>
+            <button  className="dice" onClick={rollDice}>{gameWon ? "New Game" : "Roll Dice"}</button>
         </main>
     )
 }
